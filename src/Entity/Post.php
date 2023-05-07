@@ -32,7 +32,7 @@ class Post
     private ?\DateTimeInterface $creation_date = null;
 
     #[ORM\Column(length: 255)]
-    private ?text $url = null;
+    private ?string $url = null; #Acá hubo que cambiar el tipo original ?text por ?string porque saltaba un error de tipos al querer acceder a una ruta de un post (con el PostController). Hay que ver si esto genera un problema. Ej: que las url tengas límite de 255 caracteres.
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]

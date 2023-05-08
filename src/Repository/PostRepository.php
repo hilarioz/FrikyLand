@@ -5,6 +5,9 @@ namespace App\Repository;
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\AbstractQuery;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -37,6 +40,17 @@ class PostRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findPost($id) {
+        return $this->getEntityManager()
+        ->createQuery('
+            SELECT post.id, post.title, post.type
+            FROM App:Post post
+            WHERE post.id = :id 
+        ')
+        ->setParameter('id', $id)#Acá se sugería poner (key:'id', $id) pero daba error. Lo toma sin 'el key:'. 
+        ->getResult(); 
     }
 
 //    /**

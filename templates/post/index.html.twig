@@ -3,19 +3,22 @@
 {% block title %}Hello PostController!{% endblock %}
 
 {% block body %}
-<style>
+<!--<style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    !!! Falta un { antes de controler !!!
+    <h1>Hello { controller_name }}! ✅</h1>
 
     This friendly message is coming from:
     <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/Administrador/Documents/GitHub/FrikyLand/src/Controller/PostController.php'|file_link(0) }}">src/Controller/PostController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/Administrador/Documents/GitHub/FrikyLand/templates/post/index.html.twig'|file_link(0) }}">templates/post/index.html.twig</a></code></li>
+        !!! En ambos objetos listados hay que agregar { antes de la 'C !!!
+        <li>Your controller at <code><a href="{'C:/Users/Administrador/Documents/GitHub/FrikyLand/src/Controller/PostController.php'|file_link(0) }}">src/Controller/PostController.php</a></code></li>
+        <li>Your template at <code><a href="{ 'C:/Users/Administrador/Documents/GitHub/FrikyLand/templates/post/index.html.twig'|file_link(0) }}">templates/post/index.html.twig</a></code></li>
     </ul>
-</div>
+</div>-->
 {{dump(post)}} <!--Esto muestra la info del post al que se referenció en la url-->
+{{dump(custom_post)}}
 {% endblock %}

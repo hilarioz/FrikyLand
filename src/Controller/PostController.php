@@ -13,6 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PostController extends AbstractController
 {
@@ -23,20 +26,46 @@ class PostController extends AbstractController
         $this->em = $em;
     } 
 
-    #[Route('', name: 'app_post')]
-    public function index(Request $request){
+    #[Route('/', name: 'app_post')]
+    public function index(Request $request, SluggerInterface $slugger){
+
         $post = new Post();
+        $posts = $this->em->getRepository(Post::class)->findAllPosts();
         $form = $this->createForm(PostType::class, $post);
         $form->HandleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('file')->getData();
+            $url = str_replace(' ', '-', $form->get('title')->getData());
+
+            if ($file) {
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+
+                try {
+                    $file->move(
+                        $this->getParameter('files_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('There is a problem with the file'); 
+                }
+
+                $post->setFile($newFilename);
+            }
+
+            $post->setUrl($url);
+            $user = $this->em->getRepository(User::class)->find(id: 1);
+            $post->setUser($user);
             $this->em->persist($post);
             $this->em->flush();
             return $this->redirectToRoute('app_post');
         }
         
         return $this->render('post/index.html.twig', [
-            'form' =>$form->createView()
+            'form' => $form->createView(),
+            'posts' => $posts
         ]);
     }
 

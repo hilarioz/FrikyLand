@@ -42,15 +42,16 @@ class PostRepository extends ServiceEntityRepository
         }
     }
 
-    public function findPost($id) {
+    public function findAllPosts () {
         return $this->getEntityManager()
-        ->createQuery('
-            SELECT post.id, post.title, post.type
-            FROM App:Post post
-            WHERE post.id = :id 
-        ')
-        ->setParameter('id', $id)#Acá se sugería poner (key:'id', $id) pero daba error. Lo toma sin 'el key:'. 
-        ->getResult(); 
+            ->createQuery('
+                SELECT post.id, post.title, post.description, post.file, post.creation_date, post.url, user.id AS user_id, user.email AS user_username
+                FROM App:Post post
+                JOIN post.user user
+                ORDER BY post.id DESC
+                '
+            )
+            ->getResult();
     }
 
 //    /**
